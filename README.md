@@ -44,6 +44,5 @@ After this, the mongoDB is installed, then we may use `$ cd /bin/ && mongod --db
 
 ## Resources
 
-1.[JavaScript 标准参考教程](http://javascript.ruanyifeng.com/), by [阮一峰](http://www.ruanyifeng.com/home.html)
-
-2.[使用 Express + MongoDB 搭建多人博客](https://github.com/nswbmw/N-blog), by [nswbmw](http://github.com/nswbmw)
+1.  [JavaScript 标准参考教程](http://javascript.ruanyifeng.com/), by [阮一峰](http://www.ruanyifeng.com/home.html)
+2.  [使用 Express + MongoDB 搭建多人博客](https://github.com/nswbmw/N-blog), by [nswbmw](http://github.com/nswbmw)
