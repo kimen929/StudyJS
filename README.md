@@ -15,9 +15,9 @@ The small application provide 3 pages: start, upload, show.
 ## blog (version 4+)
 blog is a minimal blog system based on [Express](http://expressjs.com/). Express is most famous Node.js framwork. To use this, we must first install it by the following command.
 
-   $ npm install express-generator -g
-   $ express -e blog (add ejs engine support)
-   $ cd blog && npm install
-   $ DEBUG=blog node ./bin/www
+    $ npm install express-generator -g
+    $ express -e blog (add ejs engine support)
+    $ cd blog && npm install
+    $ DEBUG=blog node ./bin/www
 
 Then, we can check it on the browser with `localhost:3000`.
