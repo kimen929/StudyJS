@@ -54,7 +54,7 @@ Post.prototype.save = function(callback) {
 };
 
 //get post
-Post.get = function(name, callback) {
+Post.getAll = function(name, callback) {
   //open DB
   mongodb.open(function (err, db) {
     if (err) {
@@ -82,6 +82,37 @@ Post.get = function(name, callback) {
           doc.post = markdown.toHTML(doc.post);
         });
         callback(null, docs);
+      });
+    });
+  });
+};
+
+//get one post
+Post.getOne = function(name, day, title, callback) {
+  //open DB
+  mongodb.open(function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    //Read post collection
+    db.collection('posts', function (err, collection) {
+      if (err) {
+        mongodb.close();
+        return callback(err);
+      }
+      //search in collection
+      collection.findOne({
+        "name": name,
+        "time.day": day,
+        "title": title
+      }, function (err, doc) {
+        mongodb.close();
+        if (err) {
+          return callback(err);
+        }
+        //markdown HTML
+        doc.post = markdown.toHTML(doc.post);
+        callback(null, doc);
       });
     });
   });
