@@ -25,7 +25,8 @@ Post.prototype.save = function(callback) {
       name: this.name,
       time: time,
       title: this.title,
-      post: this.post
+      post: this.post,
+      comments: []
   };
 
   //Open DB
@@ -39,7 +40,7 @@ Post.prototype.save = function(callback) {
         mongodb.close();
         return callback(err);
       }
-      //将文档插入 posts 集合
+      //Insert post into collection
       collection.insert(post, {
         safe: true
       }, function (err) {
@@ -111,8 +112,104 @@ Post.getOne = function(name, day, title, callback) {
           return callback(err);
         }
         //markdown HTML
-        doc.post = markdown.toHTML(doc.post);
+        if (doc) {
+          doc.post = markdown.toHTML(doc.post);
+          doc.comments.forEach(function (comment) {
+            comment.content = markdown.toHTML(comment.content);
+          });
+        }
         callback(null, doc);
+      });
+    });
+  });
+};
+
+//Return the post content (markdown format)
+Post.edit = function(name, day, title, callback) {
+  //Open DB
+  mongodb.open(function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    //Read post collection
+    db.collection('posts', function (err, collection) {
+      if (err) {
+        mongodb.close();
+        return callback(err);
+      }
+      //search post
+      collection.findOne({
+        "name": name,
+        "time.day": day,
+        "title": title
+      }, function (err, doc) {
+        mongodb.close();
+        if (err) {
+          return callback(err);
+        }
+        callback(null, doc);//return a post content
+      });
+    });
+  });
+};
+
+
+//Update post
+Post.update = function(name, day, title, post, callback) {
+  mongodb.open(function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    db.collection('posts', function (err, collection) {
+      if (err) {
+        mongodb.close();
+        return callback(err);
+      }
+      //update post
+      collection.update({
+        "name": name,
+        "time.day": day,
+        "title": title
+      }, {
+        $set: {post: post}
+      }, function (err) {
+        mongodb.close();
+        if (err) {
+          return callback(err);
+        }
+        callback(null);
+      });
+    });
+  });
+};
+
+
+//Delete post
+Post.remove = function(name, day, title, callback) {
+  //open DB
+  mongodb.open(function (err, db) {
+    if (err) {
+      return callback(err);
+    }
+    //read post collection
+    db.collection('posts', function (err, collection) {
+      if (err) {
+        mongodb.close();
+        return callback(err);
+      }
+      //Search for the post
+      collection.remove({
+        "name": name,
+        "time.day": day,
+        "title": title
+      }, {
+        w: 1
+      }, function (err) {
+        mongodb.close();
+        if (err) {
+          return callback(err);
+        }
+        callback(null);
       });
     });
   });
