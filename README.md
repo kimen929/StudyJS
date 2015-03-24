@@ -3,9 +3,9 @@ Here is some JavaScript sample programs I've made when I study Node.js javascrip
 
 ##Table of Contents
 
-  1.  [Simple Node Server](#simpleNodeServer)
-  2.  [Upload Picture](#uploadPics)
-  3.  [Simple Blog](#blog-(Node 0.10.33, Express 4.12.1, mongoDB 2.6.8))
+  1.  [Simple Node Server](#simplenodeserver)
+  2.  [Upload Picture](#uploadpics)
+  3.  [Simple Blog](#blog)
   4.  [Contact](#contact)
   5.  [Resources](#resources)
 
@@ -20,7 +20,10 @@ This is a picture uploader base on Node.js and formidable module. To run this, y
 The small application provide 3 pages: start, upload, show.
 `start` page provides a file uploader, `upload` page saves the file user uploaded, `show` page just shows the picture user uploaded just now.
 
-## Blog (Node 0.10.33, Express 4.12.1, mongoDB 2.6.8)
+## Blog
+
+Environment:  (Node 0.10.33, Express 4.12.1, mongoDB 2.6.8)
+
 Blog is a minimal blog system based on [Express](http://expressjs.com/). Express is most famous Node.js framwork. To use this, we must first install it by the following command.
 
     $ npm install express-generator -g
