@@ -112,8 +112,9 @@ module.exports = function(app) {
 
   app.post('/post', checkLogin);
   app.post('/post', function (req, res) {
-    var currentUser = req.session.user,
-        post = new Post(currentUser.name, req.body.title, req.body.post);
+   var currentUser = req.session.user,
+    tags = [req.body.tag1, req.body.tag2, req.body.tag3],
+    post = new Post(currentUser.name, req.body.title, tags, req.body.post); 
     post.save(function (err) {
       if (err) {
         req.flash('error', err); 
@@ -163,6 +164,40 @@ module.exports = function(app) {
     });
   });
  
+
+  app.get('/tags', function (req, res) {
+    Post.getTags(function (err, posts) {
+      if (err) {
+        req.flash('error', err); 
+        return res.redirect('/');
+      }
+      res.render('tags', {
+        title: 'Tags',
+        posts: posts,
+        user: req.session.user,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
+      });
+    });
+  });
+
+  app.get('/tags/:tag', function (req, res) {
+    Post.getTag(req.params.tag, function (err, posts) {
+      if (err) {
+        req.flash('error',err); 
+        return res.redirect('/');
+      }
+      res.render('tag', {
+        title: 'TAG:' + req.params.tag,
+        posts: posts,
+        user: req.session.user,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
+      });
+    });
+  });
+
+
   app.get('/u/:name', function (req, res) {
     var page = req.query.p ? parseInt(req.query.p) : 1;
     //To check whether the user exists
