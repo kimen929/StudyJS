@@ -55,7 +55,7 @@ Post.prototype.save = function(callback) {
 };
 
 //get post
-Post.getAll = function(name, callback) {
+Post.getTen = function(name,page, callback) {
   //open DB
   mongodb.open(function (err, db) {
     if (err) {
@@ -72,17 +72,23 @@ Post.getAll = function(name, callback) {
         query.name = name;
       }
       //search posts
-      collection.find(query).sort({
-        time: -1
-      }).toArray(function (err, docs) {
-        mongodb.close();
-        if (err) {
-          return callback(err);
-        }
-        docs.forEach(function (doc) {
-          doc.post = markdown.toHTML(doc.post);
+      collection.count(query, function (err, total) {
+      //return 10 results 
+        collection.find(query, {
+          skip: (page - 1) * 10,
+          limit: 10
+        }).sort({
+          time: -1
+        }).toArray(function (err, docs) {
+          mongodb.close();
+          if (err) {
+            return callback(err);
+          }
+          docs.forEach(function (doc) {
+           doc.post = markdown.toHTML(doc.post);
+          });
+          callback(null, docs);
         });
-        callback(null, docs);
       });
     });
   });

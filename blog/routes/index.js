@@ -5,7 +5,11 @@ var crypto = require('crypto'),
 
 module.exports = function(app) {
   app.get('/', function (req, res) {
-    Post.getAll(null, function (err, posts) {
+    //judge whether the request is for the first page.
+    var page = req.query.p ? parseInt(req.query.p) : 1;
+
+    //search and return 10 posts per page.
+    Post.getTen(null,page, function (err, posts,total) {
       if (err) {
         posts = [];
       } 
@@ -13,6 +17,9 @@ module.exports = function(app) {
         title: 'Home page',
         user: req.session.user,
         posts: posts,
+        page : page,
+        isFirstPage: (page -1) == 0,
+        isLastPage: ((page -1) * 10 + posts.length) == total,
         success: req.flash('success').toString(),
         error: req.flash('error').toString()
       });
@@ -140,6 +147,7 @@ module.exports = function(app) {
   });
 
   app.get('/u/:name', function (req, res) {
+    var page = req.query.p ? parseInt(req.query.p) : 1;
     //To check whether the user exists
     User.get(req.params.name, function (err, user) {
       if (!user) {
@@ -147,7 +155,7 @@ module.exports = function(app) {
         return res.redirect('/');//Redirect to home page
       }
       //Search for the users article
-      Post.getAll(user.name, function (err, posts) {
+      Post.getTen(user.name, page, function (err, posts, total) {
         if (err) {
           req.flash('error', err); 
           return res.redirect('/');
@@ -155,6 +163,9 @@ module.exports = function(app) {
         res.render('user', {
           title: user.name,
           posts: posts,
+          page: page,
+          isFirstPage: (page -1) == 0,
+          isLastPage: ((page-1) * 10 + posts.length) == total,
           user : req.session.user,
           success : req.flash('success').toString(),
           error : req.flash('error').toString()
