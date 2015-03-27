@@ -28,7 +28,8 @@ Post.prototype.save = function(callback) {
       title: this.title,
       tags: this.tags,
       post: this.post,
-      comments: []
+      comments: [],
+      pv : 0
   };
 
   //Open DB
@@ -98,35 +99,48 @@ Post.getTen = function(name,page, callback) {
 
 //get one post
 Post.getOne = function(name, day, title, callback) {
-  //open DB
+  //Open database
   mongodb.open(function (err, db) {
     if (err) {
       return callback(err);
     }
-    //Read post collection
+    //get collection of posts
     db.collection('posts', function (err, collection) {
       if (err) {
         mongodb.close();
         return callback(err);
       }
-      //search in collection
+      //search collection with name, day,title of post
       collection.findOne({
         "name": name,
         "time.day": day,
         "title": title
       }, function (err, doc) {
-        mongodb.close();
         if (err) {
+          mongodb.close();
           return callback(err);
         }
-        //markdown HTML
         if (doc) {
+          //add one pv for per visit
+          collection.update({
+            "name": name,
+            "time.day": day,
+            "title": title
+          }, {
+            $inc: {"pv": 1}
+          }, function (err) {
+            mongodb.close();
+            if (err) {
+              return callback(err);
+            }
+          });
+          //markdown to HTML format
           doc.post = markdown.toHTML(doc.post);
           doc.comments.forEach(function (comment) {
             comment.content = markdown.toHTML(comment.content);
           });
+          callback(null, doc);
         }
-        callback(null, doc);
       });
     });
   });

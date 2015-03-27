@@ -12,6 +12,7 @@
   <% }) %>
   </p>
   <p><%- post.post %></p>
+  <p class="info">Visits:<%= post.pv %> | Comments:<%= post.comments.length %></p>
 <% }) %>
 <%- include paging %>
 <%- include footer %>
