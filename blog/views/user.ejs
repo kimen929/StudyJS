@@ -10,6 +10,9 @@
       <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
     <% } %>
   <% }) %>
+  <% if (post.reprint_info.reprint_from) { %>
+    <br><a href="/u/<%= post.reprint_info.reprint_from.name %>/<%= post.reprint_info.reprint_from.day %>/<%= post.reprint_info.reprint_from.title %>">link</a>
+  <% } %>
   </p>
   <p><%- post.post %></p>
   <p class="info">Visits:<%= post.pv %> | Comments:<%= post.comments.length     %></p>
